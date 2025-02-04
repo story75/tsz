@@ -1,0 +1,38 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "tsz",
+      "camelcase": "TSZ",
+      "title": "TSZ",
+      "scope": "source.tsz",
+      "file-types": [
+        "tsz"
+      ],
+      "injection-regex": "^tsz$",
+      "class-name": "TreeSitterTsz"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Toy language which transpiles to TS/JS",
+    "authors": [
+      {
+        "name": "Alexander Schumacher"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/story75/tsz"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
