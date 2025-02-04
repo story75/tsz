@@ -8,6 +8,9 @@
 
 const TypeScript = require("tree-sitter-typescript/typescript/grammar");
 
+// TODO: migrate scanner from typescript grammar to solve undefined symbol errors
+// @see https://github.com/tree-sitter/tree-sitter-typescript/blob/master/typescript/src/scanner.c
+// @see https://github.com/tree-sitter/tree-sitter-typescript/blob/master/common/scanner.h
 // module.exports = grammar(TypeScript, {
 //   name: "tsz",
 
