@@ -443,7 +443,15 @@
     "nodedir": "/Users/schmidta/Library/Caches/node-gyp/22.11.0",
     "python": "/opt/homebrew/opt/python@3.13/bin/python3.13",
     "standalone_static_library": 1,
+    "global_prefix": "/Users/schmidta/Library/Application Support/fnm/node-versions/v22.11.0/installation",
     "local_prefix": "/Users/schmidta/git/story75/github/tsz/tree-sitter-tsz",
-    "user_agent": "bun/1.2.0 npm/? node/v22.6.0 darwin arm64"
+    "globalconfig": "/Users/schmidta/Library/Application Support/fnm/node-versions/v22.11.0/installation/etc/npmrc",
+    "init_module": "/Users/schmidta/.npm-init.js",
+    "userconfig": "/Users/schmidta/.npmrc",
+    "npm_version": "11.0.0",
+    "node_gyp": "/Users/schmidta/Library/Application Support/fnm/node-versions/v22.11.0/installation/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js",
+    "cache": "/Users/schmidta/.npm",
+    "user_agent": "npm/11.0.0 node/v22.11.0 darwin arm64 workspaces/false",
+    "prefix": "/Users/schmidta/Library/Application Support/fnm/node-versions/v22.11.0/installation"
   }
 }

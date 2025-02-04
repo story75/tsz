@@ -8,6 +8,20 @@
 
 const TypeScript = require("tree-sitter-typescript/typescript/grammar");
 
-module.exports = grammar(TypeScript, {
-  name: "tsz",
+// module.exports = grammar(TypeScript, {
+//   name: "tsz",
+
+//   rules: {
+//     // TODO: add the actual grammar rules
+//     source_file: $ => 'hello'
+//   }
+// });
+
+module.exports = grammar({
+  name: 'tsz',
+
+  rules: {
+    // TODO: add the actual grammar rules
+    source_file: $ => 'hello'
+  }
 });

@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "tree-sitter-cli": "^0.25.1",
-    "tree-sitter-typescript": "^0.23.2"
+    "tree-sitter-typescript": "^0.23.2",
+    "tree-sitter-javascript": "^0.23.1"
   }
 }
