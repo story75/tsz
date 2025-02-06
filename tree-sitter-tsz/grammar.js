@@ -39,12 +39,26 @@ module.exports = grammar({
     [
       'member',
       'call',
+      'binary_exp',
+      'binary_times',
+      'binary_plus',
+      'binary_shift',
+      'binary_compare',
+      'binary_relation',
+      'binary_equality',
+      'bitwise_and',
+      'bitwise_xor',
+      'bitwise_or',
+      'logical_and',
+      'logical_or',
+      'ternary',
+      $.arrow_function_expression,
     ],
   ],
 
   conflicts: $ => [
     [$.call_expression, $.expression],
-    [$._call_expression_function_identifier, $.member_expression],
+    [$._assignment_identifier, $.member_expression],
   ],
 
   word: $ => $.identifier,
@@ -52,49 +66,89 @@ module.exports = grammar({
   supertypes: $ => [
     $.statement,
     $.expression,
+    $.type,
   ],
 
   rules: {
-    source_file: $ => repeat($.statement),
+    program: $ => repeat($.statement),
     
     statement: $ => choice(
       $.function_declaration,
       $.variable_declaration,
       $.return_statement,
-      $.call_expression,
+      $.call_statement,
+      $.block_statement,
+      $.variable_assignment,
+      $.enum_declaration,
+    ),
+
+    block_statement: $ => seq(
+      '{',
+      repeat($.statement),
+      '}',
     ),
 
     function_declaration: $ => seq(
       'function',
       $.identifier,
-      $.parameter_list,
+      $.argument_list_declaration,
       ':',
-      $._type,
-      $.block
+      field('return_type', $.type),
+      field('body', $.block_statement),
     ),
 
     variable_declaration: $ => seq(
       $._declaration_kind,
-      $.identifier,
-      optional($.type_annotation),
-      optional(seq('=',$.expression)),
+      field('name', $.identifier),
+      optional(field('type', $.type_annotation)),
+      optional(seq('=',
+        field('value', $.expression)
+      )),
       ';',
     ),
 
-    parameter_list: $ => seq(
+    enum_member: $ => seq(
+      $.identifier,
+      optional(seq('=', field('value', $._enum_value))),
+    ),
+
+    enum_declaration: $ => seq(
+      'enum',
+      $.identifier,
+      '{',
+      commaSep1($.enum_member),
+      optional(','),
+      '}',
+    ),
+
+    argument_declaration: $ => seq(
+      optional(field('spread', '...')),
+      field('name', $.identifier),
+      field('type', $.type_annotation),
+    ),
+
+    argument_list_declaration: $ => seq(
       '(',
-       // TODO: parameters
-      ')'
+      commaSep(optional($.argument_declaration)),
+      ')',
     ),
 
     type_annotation: $ => seq(
       ':',
-      $._type,
+      $.type,
     ),
 
-    _type: $ => choice(
+    union_type: $ => prec.left(seq(optional($.type), '|', $.type)),
+
+    or_undefined_type: $ => seq($.type, '?'),
+
+    type: $ => choice(
+      alias($.identifier, $.type_identifier),
       $.primitive_type,
       $.array_type,
+      $.tuple_type,
+      $.union_type,
+      $.or_undefined_type,
     ),
 
     primitive_type: $ => choice(
@@ -104,21 +158,30 @@ module.exports = grammar({
       'void',
       'any',
       'unknown',
+      $.undefined,
+      $.true,
+      $.false,
       'never',
       'symbol',
       // 'object', TBD
     ),
   
     array_type: $ => seq(
-      $._type,
+      $.type,
       '[',
       ']',
     ),
 
-    block: $ => seq(
-      '{',
-      repeat($.statement),
-      '}'
+    tuple_type: $ => seq(
+      '[',
+      commaSep($.type),
+      optional(','),
+      ']',
+    ),
+
+    call_statement: $ => seq(
+      $.call_expression,
+      ';',
     ),
 
     return_statement: $ => seq(
@@ -143,32 +206,110 @@ module.exports = grammar({
           field('arguments', $.arguments),
         )),
       ),
-      ';',
+    ),
+
+    _assignment_identifier: $ => choice(
+      $.identifier,
+      $.member_expression,
+    ),
+
+    _enum_value: $ => choice(
+      $.number,
+      alias($._number, $.unary_expression),
+      $.string,
     ),
 
     _call_expression_function_identifier: $ => choice(
-      $.identifier,
-      $.member_expression,
+      $._assignment_identifier,
+      $.comptime_identifier,
       $.number,
       $.string,
+      $.array_literal,
+      $.object_literal,
       $.regex,
     ),
 
     arguments: $ => seq(
       '(',
-      commaSep(optional(choice($.expression, $.spread_element))),
+      commaSep(optional(choice($.expression, $.spread_argument))),
       ')',
     ),
 
-    spread_element: $ => seq('...', $.expression),
+    spread_argument: $ => seq('...', $.expression),
+
+    function_expression: $ => seq(
+      'function',
+      $.argument_list_declaration,
+      ':',
+      field('return_type', $.type),
+      field('body', $.block_statement),
+    ),
+
+    arrow_function_expression: $ => seq(
+      $.argument_list_declaration,
+      ':',
+      field('return_type', $.type),
+      '=>',
+      field('body', choice(
+        $.block_statement,
+        $.expression,
+      )),
+    ),
 
     expression: $ => choice(
       $._call_expression_function_identifier,
       alias($._number, $.unary_expression),
+      $.call_expression,
+      $.function_expression,
+      $.arrow_function_expression,
+      $.binary_expression,
       $.template_string,
       $.true,
       $.false,
       $.undefined,
+    ),
+
+    binary_expression: $ => choice(
+      ...[
+        ['&&', 'logical_and'],
+        ['||', 'logical_or'],
+        ['>>', 'binary_shift'],
+        ['>>>', 'binary_shift'],
+        ['<<', 'binary_shift'],
+        ['&', 'bitwise_and'],
+        ['^', 'bitwise_xor'],
+        ['|', 'bitwise_or'],
+        ['+', 'binary_plus'],
+        ['-', 'binary_plus'],
+        ['*', 'binary_times'],
+        ['/', 'binary_times'],
+        ['%', 'binary_times'],
+        ['**', 'binary_exp', 'right'],
+        ['<', 'binary_relation'],
+        ['<=', 'binary_relation'],
+        // ['==', 'binary_equality'], // not allowed in tsz
+        ['===', 'binary_equality'],
+        // ['!=', 'binary_equality'], // not allowed in tsz
+        ['!==', 'binary_equality'],
+        ['>=', 'binary_relation'],
+        ['>', 'binary_relation'],
+        ['??', 'ternary'],
+        ['instanceof', 'binary_relation'],
+        ['in', 'binary_relation'],
+      ].map(([operator, precedence, associativity]) =>
+        (associativity === 'right' ? prec.right : prec.left)(precedence, seq(
+          field('left', operator === 'in' ? choice($.expression, $.private_property_identifier) : $.expression),
+          field('operator', operator),
+          field('right', $.expression),
+        )),
+      ),
+    ),
+
+    variable_assignment: $ => seq(
+      field('assignee', $._assignment_identifier),
+      '=',
+      field('value', $.expression),
+      ';',
     ),
 
     optional_chain: _ => '?.',
@@ -183,6 +324,7 @@ module.exports = grammar({
 
     identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
     private_property_identifier: $ => seq('#', $.identifier),
+    comptime_identifier: $ => seq('@', $.identifier),
 
     _declaration_kind: $ => choice(
       $.const,
@@ -245,6 +387,22 @@ module.exports = grammar({
       field('argument', $.number),
     )),
 
+    array_literal: $ => seq(
+      '[',
+      commaSep1($.expression),
+      ']',
+    ),
+
+    object_literal: $ => seq(
+      '{',
+      commaSep1(choice(
+        $.key_value_pair,
+        alias($.identifier, $.shorthand_property_identifier),
+      )),
+      optional(','),
+      '}',
+    ),
+
     string: $ => choice(
       seq(
         '"',
@@ -262,6 +420,12 @@ module.exports = grammar({
         )),
         '\'',
       ),
+    ),
+
+    key_value_pair: $ => seq(
+      $.identifier,
+      ':',
+      $.expression,
     ),
 
     // Workaround to https://github.com/tree-sitter/tree-sitter/issues/1156

@@ -4,7 +4,7 @@
     const c = true;
     const d = [1, 2, 3];
     const e = { a: 1, b: "hello" };
-    const f = (a: number, b: number) => a + b;
+    const f = (a: number, b: number): number => a + b;
 
     console.log(@TypeOf(a)); // 1
     console.log(@TypeOf(b)); // "hello"
@@ -27,4 +27,3 @@
     console.log(@TypeOf(d)); // number[]
     console.log(@TypeOf(e)); // { a: number, b: string }
 }
-
