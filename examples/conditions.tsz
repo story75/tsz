@@ -1,0 +1,22 @@
+{
+	if (foo === 5) {
+        console.log(5);
+    } else if (foo === 6) {
+        console.log(6);
+    } else {
+        console.log('neither 5 nor 6');
+    }
+}
+
+{
+	const result = if (foo === 42) 1 else if (foo === 13) 2 else 5;
+}
+
+{
+	console.log(if (foo === 1) bar else baz);
+}
+
+{
+	const result = if (foo === 42) 1 else 0;
+}
+

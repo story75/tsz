@@ -20,7 +20,6 @@ module.exports = grammar({
 
   externals: $ => [
     $._template_chars,
-    $._ternary_qmark,
     $.html_comment,
     '||',
     // We use escape sequence and regex pattern to tell the scanner if we're currently inside a string or template string, in which case
@@ -36,6 +35,11 @@ module.exports = grammar({
   ],
 
   precedences: $ => [
+    [
+      $.if_ternary_expression,
+      $.binary_expression,
+      $.member_expression,
+    ],
     [
       'member',
       'call',
@@ -77,15 +81,80 @@ module.exports = grammar({
       $.variable_declaration,
       $.return_statement,
       $.call_statement,
+      $.switch_expression,
       $.block_statement,
       $.variable_assignment,
       $.enum_declaration,
+      $.if_statement,
+      $.break_statement,
+      $.continue_statement,
+    ),
+
+    break_statement: $ => seq(
+      'break',
+      ';',
+    ),
+
+    continue_statement: $ => seq(
+      'continue',
+      ';',
     ),
 
     block_statement: $ => seq(
       '{',
       repeat($.statement),
       '}',
+    ),
+
+    if_statement: $ => seq(
+      'if',
+      field('condition', $.parenthesized_expression),
+      field('consequence', $.block_statement),
+      optional(seq(
+        'else',
+        field('alternative', choice(
+          $.block_statement,
+          $.if_statement,
+        )),
+      )),
+    ),
+
+    parenthesized_expression: $ => seq(
+      '(',
+      $.expression,
+      ')',
+    ),
+
+    switch_expression: $ => seq(
+      'switch',
+      field('value', $.parenthesized_expression),
+      field('body', seq(
+        '{',
+        repeat($.switch_case),
+        optional($.switch_else),
+        '}',
+      )),
+    ),
+    
+    switch_case: $ => seq(
+      'case',
+      field('condition', $.expression),
+      ':',
+      field('consequence', choice(
+        $.block_statement,
+        $.expression,
+      )),
+      ';',
+    ),
+
+    switch_else: $ => seq(
+      'else',
+      ':',
+      field('consequence', choice(
+        $.block_statement,
+        $.expression,
+      )),
+      ';',
     ),
 
     function_declaration: $ => seq(
@@ -256,6 +325,16 @@ module.exports = grammar({
       )),
     ),
 
+    if_ternary_expression: $ => seq(
+      'if',
+      field('condition', $.parenthesized_expression),
+      field('consequence', $.expression),
+      'else',
+      field('alternative', $.expression),
+    ),
+
+    // TODO: rework this mess to be more coherent
+    // Split things that can be anywhere and stuff that has to be at the top level
     expression: $ => choice(
       $._call_expression_function_identifier,
       alias($._number, $.unary_expression),
@@ -267,6 +346,8 @@ module.exports = grammar({
       $.true,
       $.false,
       $.undefined,
+      $.if_ternary_expression,
+      // $.switch_expression,
     ),
 
     binary_expression: $ => choice(

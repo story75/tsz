@@ -5,7 +5,6 @@
 
 enum TokenType {
     TEMPLATE_CHARS,
-    TERNARY_QMARK,
     HTML_COMMENT,
     LOGICAL_OR,
     ESCAPE_SEQUENCE,
@@ -105,36 +104,6 @@ static WhitespaceResult scan_whitespace_and_comments(TSLexer *lexer, bool *scann
     }
 }
 
-static bool scan_ternary_qmark(TSLexer *lexer) {
-    for (;;) {
-        if (!iswspace(lexer->lookahead)) {
-            break;
-        }
-        skip(lexer);
-    }
-
-    if (lexer->lookahead == '?') {
-        advance(lexer);
-
-        if (lexer->lookahead == '?') {
-            return false;
-        }
-
-        lexer->mark_end(lexer);
-        lexer->result_symbol = TERNARY_QMARK;
-
-        if (lexer->lookahead == '.') {
-            advance(lexer);
-            if (iswdigit(lexer->lookahead)) {
-                return true;
-            }
-            return false;
-        }
-        return true;
-    }
-    return false;
-}
-
 static bool scan_html_comment(TSLexer *lexer) {
     while (iswspace(lexer->lookahead) || lexer->lookahead == 0x2028 || lexer->lookahead == 0x2029) {
         skip(lexer);
@@ -175,10 +144,6 @@ static bool scan_html_comment(TSLexer *lexer) {
 bool tree_sitter_tsz_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[TEMPLATE_CHARS]) {
         return scan_template_chars(lexer);
-    }
-
-    if (valid_symbols[TERNARY_QMARK]) {
-        return scan_ternary_qmark(lexer);
     }
 
     if (valid_symbols[HTML_COMMENT] && !valid_symbols[LOGICAL_OR] && !valid_symbols[ESCAPE_SEQUENCE] &&
