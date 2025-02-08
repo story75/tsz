@@ -62,6 +62,7 @@ module.exports = grammar({
     ],
     ['assign', $.primary_expression],
     ['member', 'call', $.expression],
+    [$.match_range, $.number],
   ],
 
   conflicts: ($) => [
@@ -253,18 +254,33 @@ module.exports = grammar({
         ';',
       ),
 
-    _match_range: ($) => seq($.number, '..', $.number),
+    // Match range is used to match a value against a range of numbers.
+    // e.g. case 1..3: ... or case 10..20: ...
+    // Ranges are inclusive of the start and end values.
+    // tsz only uses two dots like Rust, not three like Zig.
+    match_range: ($) =>
+      seq(
+        field('start', alias($.match_range_number, $.number)),
+        '..',
+        field('end', alias($.match_range_number, $.number)),
+      ),
+
+    // Due to conflicts with the number rule, we need to use a separate rule for match range numbers.
+    match_range_number: ($) => {
+      const rangeNumber = seq(optional(choice('-', '+')), /\d+/);
+      return token(rangeNumber);
+    },
 
     _match_condition: ($) =>
       choice(
-        $.number,
+        $.match_range,
+        alias($.match_range_number, $.number),
         $.string,
         $.true,
         $.false,
         $.undefined,
         $.identifier,
         $._object_member_identifier,
-        $._match_range,
       ),
 
     // Match else is used to catch everything that does not match any of the cases.
