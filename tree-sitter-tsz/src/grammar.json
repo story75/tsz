@@ -3858,13 +3858,34 @@
     }
   ],
   "conflicts": [
-    ["_block_level_statement", "primary_expression"],
-    ["_block_level_statement", "expression"],
-    ["_lhs_expression", "primary_expression"],
-    ["assignment_expression", "pattern"],
-    ["_property_identifier", "_key_value_pair"],
-    ["_property_identifier", "object_literal"],
-    ["_object_member_identifier", "_match_condition"]
+    [
+      "_block_level_statement",
+      "primary_expression"
+    ],
+    [
+      "_block_level_statement",
+      "expression"
+    ],
+    [
+      "_lhs_expression",
+      "primary_expression"
+    ],
+    [
+      "assignment_expression",
+      "pattern"
+    ],
+    [
+      "_property_identifier",
+      "_key_value_pair"
+    ],
+    [
+      "_property_identifier",
+      "object_literal"
+    ],
+    [
+      "_object_member_identifier",
+      "_match_condition"
+    ]
   ],
   "precedences": [
     [
@@ -4021,6 +4042,10 @@
     }
   ],
   "inline": [],
-  "supertypes": ["statement", "expression", "type"],
+  "supertypes": [
+    "statement",
+    "expression",
+    "type"
+  ],
   "reserved": {}
 }
