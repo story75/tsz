@@ -155,6 +155,9 @@ module.exports = grammar({
     // The root node of the AST.
     program: ($) => repeat($._top_level_statement),
 
+    // Statements are used to execute code. Grouped for supertype.
+    statement: ($) => choice($._top_level_statement, $._block_level_statement),
+
     // Statements that can be at the top level of the program.
     _top_level_statement: ($) => choice($._block_level_statement),
 
@@ -172,7 +175,7 @@ module.exports = grammar({
         $.enum_declaration,
         $.if_statement,
         $.block_statement,
-        $.variable_assignment,
+        $.assignment_expression,
         $.return_statement,
         $.break_statement,
         // $.continue_statement, // enable once for loop is implemented
@@ -504,7 +507,7 @@ module.exports = grammar({
       prec.right(
         'assign',
         seq(
-          field('left', choice($.parenthesized_expression, $._lhs_expression)),
+          field('left', $._lhs_expression), // JS also allowed expressions wrapped in parentheses, but tsz should not
           '=',
           field('right', $.expression),
         ),
@@ -594,7 +597,6 @@ module.exports = grammar({
               choice(
                 $.pair_pattern,
                 $.rest_pattern,
-                $.object_assignment_pattern,
                 alias($._property_identifier, $.shorthand_property_identifier_pattern),
               ),
             ),
@@ -711,7 +713,7 @@ module.exports = grammar({
         $.member_expression,
         $.parenthesized_expression,
         $.match_expression,
-        $.function_expression,
+        $.anonymous_function_expression,
         $.arrow_function_expression,
         $.template_string,
         $.true,
