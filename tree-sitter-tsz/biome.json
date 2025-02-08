@@ -1,0 +1,72 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "ignore": [
+      "**/Dockerfile",
+      "**/Makefile",
+      "**/LICENSE",
+      "**/public",
+      "**/assets",
+      "**/.*",
+      "**/*.xml",
+      "**/*.d.ts",
+      "**/*.info",
+      "**/*.map",
+      "**/*.sh",
+      "**/*.lock",
+      "**/*.snap",
+      "**/*.proto",
+      "**/*.patch",
+      "**/*.gif",
+      "**/*.png",
+      "**/*.ico",
+      "**/*.txt",
+      "**/*.lockb",
+      "**/*.wgsl",
+      "**/*.svg",
+      "**/*.webp",
+      "**/*.otf",
+      "**/*.ttf",
+      "**/*.toml",
+      "**/*.svelte",
+      "bindings/**"
+    ]
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100,
+    "attributePosition": "auto"
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "single",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": true,
+      "quoteStyle": "single",
+      "attributePosition": "auto"
+    }
+  }
+}

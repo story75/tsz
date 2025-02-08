@@ -111,6 +111,7 @@ INCS_Release := \
 	-I$(srcdir)/node_modules/node-addon-api
 
 OBJS := \
+	$(obj).target/$(TARGET)/src/scanner.o \
 	$(obj).target/$(TARGET)/bindings/node/binding.o \
 	$(obj).target/$(TARGET)/src/parser.o
 

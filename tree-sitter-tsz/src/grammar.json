@@ -3188,16 +3188,7 @@
       "value": "[\\s\\p{Zs}\\uFEFF\\u2028\\u2029\\u2060\\u200B]"
     }
   ],
-  "conflicts": [
-    [
-      "call_expression",
-      "expression"
-    ],
-    [
-      "_assignment_identifier",
-      "member_expression"
-    ]
-  ],
+  "conflicts": [["call_expression", "expression"], ["_assignment_identifier", "member_expression"]],
   "precedences": [
     [
       {
@@ -3303,10 +3294,6 @@
     }
   ],
   "inline": [],
-  "supertypes": [
-    "statement",
-    "expression",
-    "type"
-  ],
+  "supertypes": ["statement", "expression", "type"],
   "reserved": {}
 }
