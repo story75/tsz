@@ -3,6 +3,13 @@
   "name": "tsz",
   "word": "identifier",
   "rules": {
+    "program": {
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_top_level_statement"
+      }
+    },
     "identifier": {
       "type": "PATTERN",
       "value": "[a-zA-Z_][a-zA-Z0-9_$]*"
@@ -295,13 +302,6 @@
           "name": "or_undefined_type"
         }
       ]
-    },
-    "program": {
-      "type": "REPEAT",
-      "content": {
-        "type": "SYMBOL",
-        "name": "_top_level_statement"
-      }
     },
     "statement": {
       "type": "CHOICE",
@@ -2202,6 +2202,10 @@
               "type": "SYMBOL",
               "name": "expression"
             }
+          },
+          {
+            "type": "STRING",
+            "value": ";"
           }
         ]
       }
@@ -3704,6 +3708,10 @@
         {
           "type": "SYMBOL",
           "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "comptime_identifier"
         }
       ]
     },
@@ -3793,7 +3801,15 @@
       "value": "[\\s\\p{Zs}\\uFEFF\\u2028\\u2029\\u2060\\u200B]"
     }
   ],
-  "conflicts": [],
+  "conflicts": [
+    ["_block_level_statement", "primary_expression"],
+    ["_block_level_statement", "expression"],
+    ["_lhs_expression", "primary_expression"],
+    ["assignment_expression", "pattern"],
+    ["_property_identifier", "_key_value_pair"],
+    ["_property_identifier", "object_literal"],
+    ["_object_member_identifier", "_match_condition"]
+  ],
   "precedences": [
     [
       {
@@ -3812,11 +3828,19 @@
     [
       {
         "type": "STRING",
+        "value": "assign"
+      },
+      {
+        "type": "STRING",
         "value": "member"
       },
       {
         "type": "STRING",
         "value": "call"
+      },
+      {
+        "type": "STRING",
+        "value": "unary_void"
       },
       {
         "type": "STRING",
@@ -3872,7 +3896,39 @@
       },
       {
         "type": "SYMBOL",
+        "name": "if_ternary_expression"
+      },
+      {
+        "type": "SYMBOL",
         "name": "arrow_function_expression"
+      },
+      {
+        "type": "STRING",
+        "value": "object"
+      }
+    ],
+    [
+      {
+        "type": "STRING",
+        "value": "assign"
+      },
+      {
+        "type": "SYMBOL",
+        "name": "primary_expression"
+      }
+    ],
+    [
+      {
+        "type": "STRING",
+        "value": "member"
+      },
+      {
+        "type": "STRING",
+        "value": "call"
+      },
+      {
+        "type": "SYMBOL",
+        "name": "expression"
       }
     ]
   ],

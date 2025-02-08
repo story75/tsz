@@ -1,0 +1,19 @@
+{
+	match (bar) {
+    	case 0: console.log('low');
+        case 2: console.log('mid');
+        case 42: console.log('just right');
+        else: console.log('high');
+    }
+}
+
+{
+	const foo = match (bar) {
+    	case 0: 'low';
+        case 2: 'mid';
+        case 42: 'just right';
+        else: 'high';
+    };
+    
+    console.log(foo);
+}

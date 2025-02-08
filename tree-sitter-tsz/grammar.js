@@ -39,8 +39,10 @@ module.exports = grammar({
   precedences: ($) => [
     [$.if_ternary_expression, $.binary_expression, $.member_expression],
     [
+      'assign',
       'member',
       'call',
+      'unary_void',
       'binary_exp',
       'binary_times',
       'binary_plus',
@@ -54,8 +56,22 @@ module.exports = grammar({
       'logical_and',
       'logical_or',
       'ternary',
+      $.if_ternary_expression,
       $.arrow_function_expression,
+      'object',
     ],
+    ['assign', $.primary_expression],
+    ['member', 'call', $.expression],
+  ],
+
+  conflicts: ($) => [
+    [$._block_level_statement, $.primary_expression],
+    [$._block_level_statement, $.expression],
+    [$._lhs_expression, $.primary_expression],
+    [$.assignment_expression, $.pattern],
+    [$._property_identifier, $._key_value_pair],
+    [$._property_identifier, $.object_literal],
+    [$._object_member_identifier, $._match_condition],
   ],
 
   word: ($) => $.identifier,
@@ -65,6 +81,12 @@ module.exports = grammar({
   // #endregion
 
   rules: {
+    // IMPORTANT: THIS MUST BE THE FIRST RULE OR TREE SITTER WILL BREAK
+    //    Failed to find a variable with the same rule as the word token
+    //    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+    // The root node of the AST.
+    program: ($) => repeat($._top_level_statement),
+
     // #region Identifiers
     // Identifiers are used to name symbols like variables, functions, types, etc.
     // tsz identifiers also require the first character to be a letter or underscore.
@@ -151,9 +173,6 @@ module.exports = grammar({
     // #endregion
 
     // #region Statements
-
-    // The root node of the AST.
-    program: ($) => repeat($._top_level_statement),
 
     // Statements are used to execute code. Grouped for supertype.
     statement: ($) => choice($._top_level_statement, $._block_level_statement),
@@ -510,6 +529,7 @@ module.exports = grammar({
           field('left', $._lhs_expression), // JS also allowed expressions wrapped in parentheses, but tsz should not
           '=',
           field('right', $.expression),
+          ';',
         ),
       ),
 
@@ -725,6 +745,7 @@ module.exports = grammar({
         $.regex,
         $.array_literal,
         $.identifier,
+        $.comptime_identifier,
       ),
 
     expression: ($) =>
