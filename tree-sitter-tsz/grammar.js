@@ -62,7 +62,7 @@ module.exports = grammar({
     ],
     ['assign', $.primary_expression],
     ['member', 'call', $.expression],
-    [$.match_range, $.number],
+    [$.integer_range, $.number],
   ],
 
   conflicts: ($) => [
@@ -72,7 +72,6 @@ module.exports = grammar({
     [$.assignment_expression, $.pattern],
     [$._property_identifier, $._key_value_pair],
     [$._property_identifier, $.object_literal],
-    [$._object_member_identifier, $._match_condition],
   ],
 
   word: ($) => $.identifier,
@@ -115,7 +114,11 @@ module.exports = grammar({
     _property_identifier: ($) => choice($.identifier, $.private_property_identifier),
 
     // Object member identifier is used to name a member of an object e.g. obj.a.b.c
-    _object_member_identifier: ($) => seq($.identifier, repeat(seq('.', $.identifier))),
+    object_member_identifier: ($) =>
+      seq(
+        field('object', $.identifier),
+        repeat1(seq('.', field('property', $._property_identifier))),
+      ),
 
     // #endregion
 
@@ -132,7 +135,7 @@ module.exports = grammar({
     // This is a subset of the types in TS.
     // Notably tsz does not support 'object', 'function' and'any' as primitive types.
     // tsz tries to enforce more strict rules for type inference,
-    // The substitutes for the above mentioned types would be roughly:
+    // The substitutes for the above-mentioned types would be roughly:
     // - object: dict type like `{ [key: string]: value }`
     // - function: fn type like `(args: any) => return_type`
     // - any: unknown
@@ -182,8 +185,8 @@ module.exports = grammar({
     _top_level_statement: ($) => choice($._block_level_statement),
 
     // Blocks are used to group statements together, which create a new scope.
-    // Variables declared in a block are not visible outside of the block and must not be shadowed by variables with the same name in the outer scope.
-    block_statement: ($) => seq('{', repeat($._block_level_statement), '}'),
+    // Variables declared in a block are not visible outside the block and must not be shadowed by variables with the same name in the outer scope.
+    block_statement: ($) => seq('{', repeat1($._block_level_statement), '}'),
 
     // Statements that can be in a dedicated block { ... }
     _block_level_statement: ($) =>
@@ -198,14 +201,16 @@ module.exports = grammar({
         $.assignment_expression,
         $.return_statement,
         $.break_statement,
-        // $.continue_statement, // enable once for loop is implemented
+        $.continue_statement,
+        $.while_declaration,
+        $.for_declaration,
       ),
 
     // Break statements are used to break out of blocks.
     break_statement: ($) => seq('break', ';'),
 
     // // Continue statements are used to skip the rest of the current iteration of a loop.
-    // continue_statement: $ => seq('continue', ';'),
+    continue_statement: ($) => seq('continue', ';'),
 
     // If statements can either be a regualr statement inside a block,
     // or a ternary expression inside an expression context.
@@ -239,7 +244,7 @@ module.exports = grammar({
       seq(
         'match',
         field('value', $.parenthesized_expression),
-        field('body', seq('{', repeat($.match_case), optional($.match_else), '}')),
+        field('body', seq('{', repeat1($.match_case), optional($.match_else), '}')),
       ),
 
     // Match cases are used to match a value against a list of cases.
@@ -254,39 +259,47 @@ module.exports = grammar({
         ';',
       ),
 
-    // Match range is used to match a value against a range of numbers.
-    // e.g. case 1..3: ... or case 10..20: ...
-    // Ranges are inclusive of the start and end values.
-    // tsz only uses two dots like Rust, not three like Zig.
-    match_range: ($) =>
-      seq(
-        field('start', alias($.match_range_number, $.number)),
-        '..',
-        field('end', alias($.match_range_number, $.number)),
-      ),
-
-    // Due to conflicts with the number rule, we need to use a separate rule for match range numbers.
-    match_range_number: ($) => {
-      const rangeNumber = seq(optional(choice('-', '+')), /\d+/);
-      return token(rangeNumber);
-    },
-
     _match_condition: ($) =>
       choice(
-        $.match_range,
-        alias($.match_range_number, $.number),
+        alias($.integer_range, $.range),
+        alias($.integer, $.number),
         $.string,
         $.true,
         $.false,
         $.undefined,
         $.identifier,
-        $._object_member_identifier,
+        $.object_member_identifier,
       ),
 
     // Match else is used to catch everything that does not match any of the cases.
     // This is akin to Zig
     match_else: ($) =>
       seq('else', ':', field('consequence', choice($.block_statement, $.expression)), ';'),
+
+    // #region Loops
+
+    // While statements are used to execute a block of code as long as a condition is true.
+    while_declaration: ($) =>
+      seq(
+        'while',
+        field('condition', $.parenthesized_expression),
+        field('body', $.block_statement),
+      ),
+
+    for_condition: ($) =>
+      seq(
+        '(',
+        field('value', $.identifier),
+        optional(seq(',', field('index', $.identifier))),
+        'of',
+        choice($.integer_range, $.array_literal, $.identifier, $.object_member_identifier),
+        ')',
+      ),
+
+    for_declaration: ($) =>
+      seq('for', field('condition', $.for_condition), field('body', $.block_statement)),
+
+    // #endregion
 
     // Function declarations are used to create a new function in the form of function name(arguments) { ... }
     // Alternatives are arrow functions and function expressions.
@@ -390,6 +403,23 @@ module.exports = grammar({
     // The values are wrapped to remove ambiguity in the grammar.
     // In fact most of those also have to be wrapped in JS
     _wrapped_primitive_value: ($) => seq('(', choice($.primitive_value), ')'),
+
+    // Due to conflicts with the number rule, we need to use a separate rule for simple integers to use with ranges.
+    integer: ($) => {
+      const rangeNumber = seq(optional(choice('-', '+')), /\d+/);
+      return token(rangeNumber);
+    },
+
+    // Integer range is used to define a range array of numbers.
+    // e.g. case 1..3: ... or case 10..20: ...
+    // Ranges are inclusive of the start and end values.
+    // tsz only uses two dots like Rust, not three like Zig.
+    integer_range: ($) =>
+      seq(
+        field('start', alias($.integer, $.number)),
+        '..',
+        field('end', alias($.integer, $.number)),
+      ),
 
     // numbers in the same notation as in JS
     number: (_) => {
@@ -517,13 +547,13 @@ module.exports = grammar({
     regex_flags: (_) => token.immediate(/[a-z]+/),
     // #endregion
 
-    array_literal: ($) => seq('[', commaSep1($.expression), ']'),
+    array_literal: ($) => seq('[', commaSep($.expression), ']'),
 
     // #region Object literals
     object_literal: ($) =>
       seq(
         '{',
-        commaSep1(
+        commaSep(
           field(
             'member',
             choice($._key_value_pair, alias($.identifier, $.shorthand_property_identifier)),
@@ -587,7 +617,7 @@ module.exports = grammar({
       prec(
         'member',
         seq(
-          field('object', choice($.primary_expression)), // TODO: enforce that not every expression is allowed here; $.primary_expression unset
+          field('object', choice($.primary_expression)), // TODO: enforce that not every expression is allowed here
           choice('.', field('optional_chain', $.optional_chain)),
           field(
             'property',
@@ -628,21 +658,18 @@ module.exports = grammar({
         'object',
         seq(
           '{',
-          commaSep(
-            optional(
-              choice(
-                $.pair_pattern,
-                $.rest_pattern,
-                alias($._property_identifier, $.shorthand_property_identifier_pattern),
-              ),
+          commaSep1(
+            choice(
+              $.pair_pattern,
+              $.rest_pattern,
+              alias($._property_identifier, $.shorthand_property_identifier_pattern),
             ),
           ),
           '}',
         ),
       ),
 
-    array_pattern: ($) =>
-      seq('[', commaSep(optional(choice($.pattern, $.assignment_pattern))), ']'),
+    array_pattern: ($) => seq('[', commaSep1(choice($.pattern, $.assignment_pattern)), ']'),
 
     // #endregion
 

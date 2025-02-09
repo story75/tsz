@@ -1,0 +1,10 @@
+{
+	let bar = 0;
+
+	while (bar) {
+    	if (bar === 5) {
+        	break;
+        }
+        bar = bar + 1;
+    }
+}

@@ -175,7 +175,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "expression",
@@ -190,7 +190,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "assignment_pattern",
@@ -556,7 +556,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "assignment_expression",
@@ -575,7 +575,15 @@
           "named": true
         },
         {
+          "type": "continue_statement",
+          "named": true
+        },
+        {
           "type": "enum_declaration",
+          "named": true
+        },
+        {
+          "type": "for_declaration",
           "named": true
         },
         {
@@ -596,6 +604,10 @@
         },
         {
           "type": "variable_declaration",
+          "named": true
+        },
+        {
+          "type": "while_declaration",
           "named": true
         }
       ]
@@ -673,6 +685,11 @@
     }
   },
   {
+    "type": "continue_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "enum_declaration",
     "named": true,
     "fields": {},
@@ -685,6 +702,80 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "for_condition",
+    "named": true,
+    "fields": {
+      "index": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "array_literal",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer_range",
+          "named": true
+        },
+        {
+          "type": "object_member_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "for_declaration",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "block_statement",
+            "named": true
+          }
+        ]
+      },
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "for_condition",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -804,6 +895,32 @@
     }
   },
   {
+    "type": "integer_range",
+    "named": true,
+    "fields": {
+      "end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "match_case",
     "named": true,
     "fields": {
@@ -816,10 +933,6 @@
             "named": false
           },
           {
-            "type": ".",
-            "named": false
-          },
-          {
             "type": "false",
             "named": true
           },
@@ -828,11 +941,15 @@
             "named": true
           },
           {
-            "type": "match_range",
+            "type": "number",
             "named": true
           },
           {
-            "type": "number",
+            "type": "object_member_identifier",
+            "named": true
+          },
+          {
+            "type": "range",
             "named": true
           },
           {
@@ -924,32 +1041,6 @@
     }
   },
   {
-    "type": "match_range",
-    "named": true,
-    "fields": {
-      "end": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "number",
-            "named": true
-          }
-        ]
-      },
-      "start": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "number",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
     "type": "member_expression",
     "named": true,
     "fields": {
@@ -1005,7 +1096,7 @@
       },
       "member": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": ":",
@@ -1038,12 +1129,42 @@
     }
   },
   {
+    "type": "object_member_identifier",
+    "named": true,
+    "fields": {
+      "object": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "property": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "private_property_identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "object_pattern",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "pair_pattern",
@@ -1294,7 +1415,15 @@
           "named": true
         },
         {
+          "type": "continue_statement",
+          "named": true
+        },
+        {
           "type": "enum_declaration",
+          "named": true
+        },
+        {
+          "type": "for_declaration",
           "named": true
         },
         {
@@ -1316,8 +1445,38 @@
         {
           "type": "variable_declaration",
           "named": true
+        },
+        {
+          "type": "while_declaration",
+          "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "range",
+    "named": true,
+    "fields": {
+      "end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1622,6 +1781,32 @@
     }
   },
   {
+    "type": "while_declaration",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "block_statement",
+            "named": true
+          }
+        ]
+      },
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "!",
     "named": false
   },
@@ -1851,6 +2036,10 @@
     "named": true
   },
   {
+    "type": "continue",
+    "named": false
+  },
+  {
     "type": "else",
     "named": false
   },
@@ -1865,6 +2054,10 @@
   {
     "type": "false",
     "named": true
+  },
+  {
+    "type": "for",
+    "named": false
   },
   {
     "type": "function",
@@ -1905,11 +2098,15 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
+  },
+  {
+    "type": "of",
+    "named": false
   },
   {
     "type": "optional_chain",
@@ -1969,6 +2166,10 @@
   },
   {
     "type": "void",
+    "named": false
+  },
+  {
+    "type": "while",
     "named": false
   },
   {
