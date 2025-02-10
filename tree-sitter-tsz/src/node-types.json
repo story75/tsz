@@ -42,6 +42,10 @@
         "named": true
       },
       {
+        "type": "object_type",
+        "named": true
+      },
+      {
         "type": "or_undefined_type",
         "named": true
       },
@@ -696,7 +700,26 @@
   {
     "type": "enum_declaration",
     "named": true,
-    "fields": {},
+    "fields": {
+      "tag": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -1186,6 +1209,32 @@
     }
   },
   {
+    "type": "object_type",
+    "named": true,
+    "fields": {
+      "type": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "or_undefined_type",
     "named": true,
     "fields": {},
@@ -1657,7 +1706,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "type",
@@ -2111,11 +2160,11 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "of",

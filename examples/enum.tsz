@@ -1,0 +1,29 @@
+{
+    enum Color {
+        Red,
+        Green,
+        Blue,
+    }
+
+    let k: Color = Color.Red;
+    console.log(@TypeOf(k)); // Color
+}
+
+{
+    enum Tagged {
+        A_Number(number),
+        B_String(string),
+        C_Boolean(boolean),
+        D_Object({ a: number, b: string }),
+    }
+
+    let k: Tagged = Tagged.A_Number(1);
+    console.log(@TypeOf(k)); // Tagged
+
+    match (k) {
+    	case Tagged.A_Number: console.log('k is a number', k);
+        case Tagged.B_String: console.log('k is a string', k);
+        case Tagged.C_Boolean: console.log('k is a boolean', k);
+        case Tagged.D_Object: console.log('k is an object', k);
+    };
+}

@@ -160,8 +160,11 @@ module.exports = grammar({
     // A list of elements with a uniform type, just like in TS.
     array_type: ($) => seq($.type, '[', ']'),
 
+    object_type: ($) =>
+      seq('{', commaSep1(seq($.identifier, ':', field('type', $.type))), optional(','), '}'),
+
     // A list of elements with a fixed number of elements with different types, just like in TS.
-    tuple_type: ($) => seq('[', commaSep($.type), optional(','), ']'),
+    tuple_type: ($) => seq('[', commaSep1($.type), optional(','), ']'),
 
     // A union of two types, just like in TS.
     union_type: ($) => prec.left(seq(optional($.type), '|', $.type)),
@@ -173,6 +176,7 @@ module.exports = grammar({
         alias($.identifier, $.type_identifier),
         $.primitive_type,
         $.array_type,
+        $.object_type,
         $.tuple_type,
         $.union_type,
         $.or_undefined_type,
@@ -378,7 +382,14 @@ module.exports = grammar({
 
     // Enum declarations are used to declare a union of named values.
     enum_declaration: ($) =>
-      seq('enum', $.identifier, '{', commaSep1($.identifier), optional(','), '}'),
+      seq(
+        'enum',
+        $.identifier,
+        '{',
+        commaSep1(seq($.identifier, optional(field('tag', seq('(', $.type, ')'))))),
+        optional(','),
+        '}',
+      ),
 
     // A call statement is a explicit call to a function in a block which must be terminated with a semicolon.
     call_statement: ($) => seq($.call_expression, ';'),

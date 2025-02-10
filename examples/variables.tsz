@@ -71,18 +71,6 @@
     console.log(@TypeOf(k)); // [1, "foo"]
 }
 
-// enums
-{
-    enum Color {
-        Red,
-        Green,
-        Blue,
-    }
-
-    let k: Color = Color.Red;
-    console.log(@TypeOf(k)); // Color
-}
-
 // functions
 {
     function add(a: number, b: number): number {
@@ -127,7 +115,6 @@
 // type assertions
 {
     let m: number | string = "hello";
-    // let n = m as number; // error: cannot assign "hello" to number
     console.log(@TypeOf(m)); // string
     m = 1;
     console.log(@TypeOf(m)); // number
