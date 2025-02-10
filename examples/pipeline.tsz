@@ -1,0 +1,12 @@
+{
+    const add = (a: number, b: number): number => a + b;
+
+    const result1 = 1 |> add(#, 2) |> add(#, 3) |> add(#, 4);
+    console.log(result1); // 10
+
+    const result2 = 1 |> add(#, #) |> add(#, #) |> add(#, #);
+    console.log(result2); // 8
+    
+    const result3 = 'world' |> `hello ${#}`;
+    console.log(result3); // 'hello world'
+}

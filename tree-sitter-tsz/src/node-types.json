@@ -533,6 +533,10 @@
             "named": false
           },
           {
+            "type": "|>",
+            "named": false
+          },
+          {
             "type": "||",
             "named": false
           }
@@ -1277,6 +1281,11 @@
     }
   },
   {
+    "type": "pipeline_placeholder",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "primary_expression",
     "named": true,
     "fields": {},
@@ -1326,6 +1335,10 @@
         },
         {
           "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "pipeline_placeholder",
           "named": true
         },
         {
@@ -2098,11 +2111,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "of",
@@ -2182,6 +2195,10 @@
   },
   {
     "type": "|=",
+    "named": false
+  },
+  {
+    "type": "|>",
     "named": false
   },
   {

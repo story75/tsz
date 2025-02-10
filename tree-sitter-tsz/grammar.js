@@ -42,6 +42,7 @@ module.exports = grammar({
       'assign',
       'member',
       'call',
+      'pipeline',
       'unary_void',
       'binary_exp',
       'binary_times',
@@ -100,6 +101,9 @@ module.exports = grammar({
     // tsz e.g. offers inbuilt functions like @typeOf(value) which returns the type of a value at compile time.
     // TODO: this clashes with the @ symbol used for decorators in JS/TS.
     comptime_identifier: ($) => seq('@', $.identifier),
+
+    // Pipeline placeholder is used to indicate the position where a value should be piped into a function.
+    pipeline_placeholder: ($) => '#',
 
     // Boolean literals just like in JS.
     // booleans, just like in TS, can be used as values and types.
@@ -709,6 +713,7 @@ module.exports = grammar({
           ['??', 'ternary'],
           ['instanceof', 'binary_relation'],
           ['in', 'binary_relation'],
+          ['|>', 'pipeline'],
         ].map(([operator, precedence, associativity]) =>
           (associativity === 'right' ? prec.right : prec.left)(
             precedence,
@@ -789,6 +794,7 @@ module.exports = grammar({
         $.array_literal,
         $.identifier,
         $.comptime_identifier,
+        $.pipeline_placeholder,
       ),
 
     expression: ($) =>

@@ -40,6 +40,10 @@
         }
       ]
     },
+    "pipeline_placeholder": {
+      "type": "STRING",
+      "value": "#"
+    },
     "true": {
       "type": "STRING",
       "value": "true"
@@ -3644,6 +3648,39 @@
               }
             ]
           }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": "pipeline",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "STRING",
+                  "value": "|>"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -3895,6 +3932,10 @@
         {
           "type": "SYMBOL",
           "name": "comptime_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pipeline_placeholder"
         }
       ]
     },
@@ -4019,6 +4060,10 @@
       {
         "type": "STRING",
         "value": "call"
+      },
+      {
+        "type": "STRING",
+        "value": "pipeline"
       },
       {
         "type": "STRING",
