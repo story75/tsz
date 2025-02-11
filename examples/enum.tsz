@@ -14,7 +14,7 @@
         A_Number(number),
         B_String(string),
         C_Boolean(boolean),
-        D_Object({ a: number, b: string }),
+        D_Object({ a: number, b: {nested: string} }),
     }
 
     let k: Tagged = Tagged.A_Number(1);
@@ -25,5 +25,5 @@
         case Tagged.B_String: console.log('k is a string', k);
         case Tagged.C_Boolean: console.log('k is a boolean', k);
         case Tagged.D_Object: console.log('k is an object', k);
-    };
+    }
 }

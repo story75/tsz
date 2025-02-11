@@ -1,0 +1,15 @@
+{
+    async function add(a: number, b: number): Promise<number> {
+        console.log(@TypeOf(a)); // number
+        console.log(@TypeOf(b)); // number
+        return a + b;
+    }
+
+    const add2 = async (a: number, b: number): Promise<number> => {
+        console.log(@TypeOf(a)); // number
+        console.log(@TypeOf(b)); // number
+        return a + b;
+    };
+
+    const result = 1 |> add(#, 2) |> await #;
+}

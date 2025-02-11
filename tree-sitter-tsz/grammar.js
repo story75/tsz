@@ -135,6 +135,10 @@ module.exports = grammar({
     // This is equal to type | undefined in TS.
     or_undefined_type: ($) => seq($.type, '?'),
 
+    // Generic type is used to create generic types in tsz, mimicking the syntax of TS.
+    // e.g. `Array<number>` or `Promise<string>`
+    generic_type: ($) => seq($.type, '<', field('generic_arguments', commaSep1($.type)), '>'),
+
     // Primitive types in tsz.
     // This is a subset of the types in TS.
     // Notably tsz does not support 'object', 'function' and'any' as primitive types.
@@ -180,6 +184,7 @@ module.exports = grammar({
         $.tuple_type,
         $.union_type,
         $.or_undefined_type,
+        $.generic_type,
       ),
 
     // #endregion
@@ -314,6 +319,7 @@ module.exports = grammar({
     // Functions declarations in tsz require an explicit return type.
     function_declaration: ($) =>
       seq(
+        optional(alias('async', $.async_keyword)),
         'function',
         $.identifier,
         $.argument_list_declaration,
@@ -348,6 +354,7 @@ module.exports = grammar({
     // The only difference to a function declaration is that the identifier is ommited.
     anonymous_function_expression: ($) =>
       seq(
+        optional(alias('async', $.async_keyword)),
         'function',
         $.argument_list_declaration,
         field('return_type', $.type_annotation),
@@ -359,6 +366,7 @@ module.exports = grammar({
     // Unlike the anonymous function expression, the body is not required to be a block statement.
     arrow_function_expression: ($) =>
       seq(
+        optional(alias('async', $.async_keyword)),
         $.argument_list_declaration,
         field('return_type', $.type_annotation),
         '=>',
@@ -754,7 +762,7 @@ module.exports = grammar({
       prec.left(
         'unary_void',
         seq(
-          field('operator', choice('!', '~', '-', '+', 'typeof', 'void')),
+          field('operator', choice('!', '~', '-', '+', 'typeof', 'void', 'await')),
           field('argument', $.expression),
         ),
       ),

@@ -42,6 +42,10 @@
         "named": true
       },
       {
+        "type": "generic_type",
+        "named": true
+      },
+      {
         "type": "object_type",
         "named": true
       },
@@ -93,11 +97,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "argument_list_declaration",
+          "named": true
+        },
+        {
+          "type": "async_keyword",
           "named": true
         }
       ]
@@ -252,11 +260,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "argument_list_declaration",
+          "named": true
+        },
+        {
+          "type": "async_keyword",
           "named": true
         }
       ]
@@ -839,7 +851,41 @@
           "named": true
         },
         {
+          "type": "async_keyword",
+          "named": true
+        },
+        {
           "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "generic_type",
+    "named": true,
+    "fields": {
+      "generic_arguments": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -1762,6 +1808,10 @@
             "named": false
           },
           {
+            "type": "await",
+            "named": false
+          },
+          {
             "type": "typeof",
             "named": false
           },
@@ -2077,6 +2127,14 @@
     "named": false
   },
   {
+    "type": "async_keyword",
+    "named": true
+  },
+  {
+    "type": "await",
+    "named": false
+  },
+  {
     "type": "boolean",
     "named": false
   },
@@ -2160,11 +2218,11 @@
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "of",

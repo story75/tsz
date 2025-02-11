@@ -132,6 +132,52 @@
         }
       ]
     },
+    "generic_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "type"
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "FIELD",
+          "name": "generic_arguments",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "type"
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "type"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        }
+      ]
+    },
     "primitive_type": {
       "type": "CHOICE",
       "members": [
@@ -392,6 +438,10 @@
         {
           "type": "SYMBOL",
           "name": "or_undefined_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "generic_type"
         }
       ]
     },
@@ -955,6 +1005,23 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
+                "value": "async"
+              },
+              "named": true,
+              "value": "async_keyword"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": "function"
         },
@@ -1180,6 +1247,23 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
+                "value": "async"
+              },
+              "named": true,
+              "value": "async_keyword"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": "function"
         },
@@ -1208,6 +1292,23 @@
     "arrow_function_expression": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
+                "value": "async"
+              },
+              "named": true,
+              "value": "async_keyword"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
         {
           "type": "SYMBOL",
           "name": "argument_list_declaration"
@@ -3867,6 +3968,10 @@
                 {
                   "type": "STRING",
                   "value": "void"
+                },
+                {
+                  "type": "STRING",
+                  "value": "await"
                 }
               ]
             }
@@ -4174,12 +4279,30 @@
     }
   ],
   "conflicts": [
-    ["_block_level_statement", "primary_expression"],
-    ["_block_level_statement", "expression"],
-    ["_lhs_expression", "primary_expression"],
-    ["assignment_expression", "pattern"],
-    ["_property_identifier", "_key_value_pair"],
-    ["_property_identifier", "object_literal"]
+    [
+      "_block_level_statement",
+      "primary_expression"
+    ],
+    [
+      "_block_level_statement",
+      "expression"
+    ],
+    [
+      "_lhs_expression",
+      "primary_expression"
+    ],
+    [
+      "assignment_expression",
+      "pattern"
+    ],
+    [
+      "_property_identifier",
+      "_key_value_pair"
+    ],
+    [
+      "_property_identifier",
+      "object_literal"
+    ]
   ],
   "precedences": [
     [
@@ -4340,6 +4463,10 @@
     }
   ],
   "inline": [],
-  "supertypes": ["statement", "expression", "type"],
+  "supertypes": [
+    "statement",
+    "expression",
+    "type"
+  ],
   "reserved": {}
 }
