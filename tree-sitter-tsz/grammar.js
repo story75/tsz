@@ -64,6 +64,17 @@ module.exports = grammar({
     ['assign', $.primary_expression],
     ['member', 'call', $.expression],
     [$.integer_range, $.number],
+    [$.union_type, $.function_type],
+    [
+      $.union_type,
+      $.array_type,
+      $.generic_type,
+      $.or_undefined_type,
+      $.lookup_type,
+      $.index_type_query,
+      $.type_predicate,
+      $.type,
+    ],
   ],
 
   conflicts: ($) => [
@@ -137,7 +148,12 @@ module.exports = grammar({
 
     // Generic type is used to create generic types in tsz, mimicking the syntax of TS.
     // e.g. `Array<number>` or `Promise<string>`
-    generic_type: ($) => seq($.type, '<', field('generic_arguments', commaSep1($.type)), '>'),
+    generic_type: ($) =>
+      seq(alias($.identifier, $.type), '<', field('generic_arguments', commaSep1($.type)), '>'),
+
+    // Index type query is used to query the type of the keys of an object.
+    // e.g. `keyof { a: number, b: string }` => `'a' | 'b'`
+    index_type_query: ($) => seq('keyof', $.type),
 
     // Primitive types in tsz.
     // This is a subset of the types in TS.
@@ -157,6 +173,8 @@ module.exports = grammar({
         $.undefined,
         $.true,
         $.false,
+        $.string,
+        $.number,
         'never',
         'symbol',
       ),
@@ -173,6 +191,28 @@ module.exports = grammar({
     // A union of two types, just like in TS.
     union_type: ($) => prec.left(seq(optional($.type), '|', $.type)),
 
+    asserts: ($) => seq('asserts', choice($.type_predicate, $.identifier)),
+
+    type_predicate: ($) => seq(field('name', $.identifier), 'is', field('type', $.type)),
+
+    lookup_type: ($) =>
+      seq(
+        field('root', $.type),
+        '[',
+        field('key', choice(alias($.identifier, $.type), $.primitive_type)),
+        ']',
+      ),
+
+    function_type: ($) =>
+      prec.left(
+        seq(
+          field('type_parameters', optional($.type_parameters)),
+          field('parameters', $.argument_list_declaration),
+          '=>',
+          field('return_type', choice($.type, $.asserts, $.type_predicate)),
+        ),
+      ),
+
     // All possible combinations of types in tsz.
     // In parts this mirrors the type system of TS, but as a smaller subset.
     type: ($) =>
@@ -185,7 +225,45 @@ module.exports = grammar({
         $.union_type,
         $.or_undefined_type,
         $.generic_type,
+        $.index_type_query,
+        $.function_type,
+        $.lookup_type,
       ),
+
+    // #region Type declarations
+
+    type_parameter: ($) =>
+      seq(
+        optional('const'),
+        field('name', $.identifier),
+        field('constraint', optional($.constraint)),
+        field('value', optional($.default_type)),
+      ),
+
+    default_type: ($) => seq('=', $.type),
+
+    constraint: ($) => seq(choice('extends', ':'), $.type),
+
+    type_parameters: ($) => seq('<', commaSep1($.type_parameter), optional(','), '>'),
+
+    type_alias_declaration: ($) =>
+      seq(
+        'type',
+        field('name', $.identifier),
+        field('type_parameters', optional($.type_parameters)),
+        '=',
+        field('value', $.type),
+        ';',
+      ),
+
+    // #endregion
+
+    // #endregion
+
+    // #region Import and export declarations
+
+    export_statement: ($) =>
+      seq('export', field('declaration', choice($.type_alias_declaration, $.function_declaration))),
 
     // #endregion
 
@@ -195,7 +273,8 @@ module.exports = grammar({
     statement: ($) => choice($._top_level_statement, $._block_level_statement),
 
     // Statements that can be at the top level of the program.
-    _top_level_statement: ($) => choice($._block_level_statement),
+    _top_level_statement: ($) =>
+      choice($._block_level_statement, $.type_alias_declaration, $.export_statement),
 
     // Blocks are used to group statements together, which create a new scope.
     // Variables declared in a block are not visible outside the block and must not be shadowed by variables with the same name in the outer scope.

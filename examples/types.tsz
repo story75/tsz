@@ -1,0 +1,25 @@
+export type EventListener<M, E extends keyof M> = (evt: M[E]) => void | Promise<void>;
+
+export type Listener<M, E extends keyof M> = EventListener<M, E>;
+
+type Foo = number;
+
+type Bar = {a: string, b: number};
+
+type Baz = {deep: {nested: {baz: number}}};
+
+type Union = number | string;
+
+type Array = number[];
+
+type Tuple = [string, number];
+
+type Lookup = Baz['deep']['nested'];
+
+type WeirdLookup = {a: string}['a'];
+
+type Baz = 'foobar';
+
+type Generic<T> = T[];
+
+type Generic2<T> = Promise<T>;
