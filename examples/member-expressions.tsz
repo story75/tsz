@@ -1,0 +1,6 @@
+expect(result).toBeDefined();
+expect.toBeDefined();
+
+const a = foo.bar;
+const b = foo().bar;
+const c = foo(a, b, c).bar();

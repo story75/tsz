@@ -84,6 +84,9 @@
 
 // arrow functions
 {
+    const fn = () => {};
+    console.log(@TypeOf(fn)); // () -> void
+
     const add2 = (a: number, b: number): number => {
         console.log(@TypeOf(a)); // number
         console.log(@TypeOf(b)); // number

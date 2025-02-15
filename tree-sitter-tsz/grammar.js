@@ -515,7 +515,7 @@ module.exports = grammar({
       seq(
         optional(alias('async', $.async_keyword)),
         $.argument_list_declaration,
-        field('return_type', $.type_annotation),
+        optional(field('return_type', $.type_annotation)),
         '=>',
         field('body', choice($.block_statement, $.expression)),
       ),
@@ -787,7 +787,7 @@ module.exports = grammar({
       prec(
         'member',
         seq(
-          field('object', choice($.primary_expression)), // TODO: enforce that not every expression is allowed here
+          field('object', choice($.primary_expression, $.call_expression)),
           choice('.', field('optional_chain', $.optional_chain)),
           field(
             'property',
