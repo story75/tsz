@@ -38,6 +38,7 @@ module.exports = grammar({
 
   precedences: ($) => [
     [$.if_ternary_expression, $.binary_expression, $.member_expression],
+    [$.await_expression, $.unary_expression],
     [
       'assign',
       'member',
@@ -555,7 +556,7 @@ module.exports = grammar({
       ),
 
     // A call statement is a explicit call to a function in a block which must be terminated with a semicolon.
-    call_statement: ($) => seq($.call_expression, ';'),
+    call_statement: ($) => seq(choice($.call_expression, $.await_expression), ';'),
 
     // A return statement is used to return a value from a function.
     return_statement: ($) => seq('return', $.expression, ';'),
@@ -963,6 +964,8 @@ module.exports = grammar({
         ),
       ),
 
+    await_expression: ($) => prec('unary_void', seq('await', $.expression)),
+
     primary_expression: ($) =>
       choice(
         $.member_expression,
@@ -993,6 +996,7 @@ module.exports = grammar({
         $.binary_expression,
         $.if_ternary_expression,
         $.call_expression,
+        $.await_expression,
       ),
 
     // #endregion

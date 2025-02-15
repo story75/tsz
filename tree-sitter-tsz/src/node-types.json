@@ -12,6 +12,10 @@
         "named": true
       },
       {
+        "type": "await_expression",
+        "named": true
+      },
+      {
         "type": "binary_expression",
         "named": true
       },
@@ -470,6 +474,21 @@
     }
   },
   {
+    "type": "await_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "binary_expression",
     "named": true,
     "fields": {
@@ -713,6 +732,10 @@
       "multiple": false,
       "required": true,
       "types": [
+        {
+          "type": "await_expression",
+          "named": true
+        },
         {
           "type": "call_expression",
           "named": true
@@ -2707,11 +2730,11 @@
   },
   {
     "type": "const",
-    "named": true
+    "named": false
   },
   {
     "type": "const",
-    "named": false
+    "named": true
   },
   {
     "type": "continue",

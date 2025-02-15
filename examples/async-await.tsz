@@ -14,4 +14,6 @@
     const result = 1 |> add(#, 2) |> await #;
     
     const result2 = await add(1, 2);
+
+    await add(1, 2);
 }
