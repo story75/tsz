@@ -61,8 +61,9 @@ module.exports = grammar({
       $.arrow_function_expression,
       'object',
     ],
+    [$.variable_assignment_expression, $.object_assignment_pattern, $._lhs_expression],
     ['assign', $.primary_expression],
-    ['member', 'call', $.expression],
+    [$.variable_declaration, 'member', 'call', $.expression],
     [$.integer_range, $.number],
     [$.union_type, $.function_type],
     [
@@ -528,13 +529,18 @@ module.exports = grammar({
     // Let variables are mutable and can be reassigned. They can also be declared without an initializer.
     // Type annotations are optional for variables and can be inferred by the compiler through the initializer.
     // Variables without an initializer will be of type unknown.
-    variable_declaration: ($) =>
+    variable_assignment_expression: ($) =>
       seq(
-        field('kind', choice(alias('const', $.const), alias('let', $.let))),
         field('name', $.identifier),
         optional($.type_annotation),
         optional(seq('=', field('value', $.expression))),
         ';',
+      ),
+
+    variable_declaration: ($) =>
+      seq(
+        field('kind', choice(alias('const', $.const), alias('let', $.let))),
+        choice($.variable_assignment_expression, $.assignment_expression),
       ),
 
     // Enum declarations are used to declare a union of named values.
@@ -739,7 +745,6 @@ module.exports = grammar({
     // #endregion
 
     // #region Assignment expressions
-
     assignment_expression: ($) =>
       prec.right(
         'assign',
@@ -816,6 +821,19 @@ module.exports = grammar({
 
     assignment_pattern: ($) => seq(field('left', $.pattern), '=', field('right', $.expression)),
 
+    object_assignment_pattern: ($) =>
+      seq(
+        field(
+          'left',
+          choice(
+            alias($.identifier, $.shorthand_property_identifier_pattern),
+            $._destructuring_pattern,
+          ),
+        ),
+        '=',
+        field('right', $.expression),
+      ),
+
     // Pair pattern is used to define destructure elements in an object pattern.
     // e.g. {a: foo, b: bar} = {a: 1, b: 2} where key = a and value = foo or b and bar
     pair_pattern: ($) =>
@@ -835,6 +853,7 @@ module.exports = grammar({
               $.pair_pattern,
               $.rest_pattern,
               alias($._property_identifier, $.shorthand_property_identifier_pattern),
+              $.object_assignment_pattern,
             ),
           ),
           '}',

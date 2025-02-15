@@ -1,0 +1,8 @@
+const { a, b } = options;
+const { a, b = {a: 5} } = options;
+const { ccc = {} } = options;
+const { a: aaa, b: bbb } = options;
+
+const [a, b] = options;
+const [a, b = 5] = options;
+const [a, b = {a: 5}] = options;
