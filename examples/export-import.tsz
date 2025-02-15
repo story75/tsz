@@ -1,0 +1,43 @@
+import 'core-js/foo';
+import DefaultName from 'svelte-package';
+import type {Foo} from 'type-package';
+import {type Foo, Bar, type Baz as TypeBaz} from 'mixed-package';
+import default as RenameDefault from 'foo';
+import * as GroupedImport from 'bar';
+
+export * from 'reexport';
+export * as Baz from 'reexport';
+export {Foo as Bar, type Baz} from 'foo';
+export type {Foo} from 'foo';
+
+export type EventListener<M, E extends keyof M> = (evt: M[E]) => void | Promise<void>;
+
+export type Listener<M, E extends keyof M> = EventListener<M, E>;
+
+export function foo(a: string, b: string): string {
+	return `${a}:${b}`;
+}
+
+export const bar = "bar";
+export let baz = 1;
+
+export enum Color {
+    Red,
+    Green,
+	Blue,
+}
+
+export type Foo = {
+	a: string,
+	b: number,
+};
+
+export enum Tagged {
+    A_Number(number),
+    B_String(string),
+    C_Boolean(boolean),
+    D_Object({ a: number, b: {nested: string} }),
+}
+
+export default const foo = "bar";
+

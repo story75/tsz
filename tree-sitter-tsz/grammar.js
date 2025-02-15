@@ -262,8 +262,71 @@ module.exports = grammar({
 
     // #region Import and export declarations
 
+    namespace_export: ($) => seq('*', 'as', field('alias', $.identifier)),
+
+    export_specifier: ($) =>
+      seq(
+        optional('type'),
+        choice(
+          '*',
+          seq(field('name', $.identifier), optional(seq('as', field('alias', $.identifier)))),
+          $.namespace_export,
+        ),
+      ),
+
+    export_clause: ($) =>
+      seq(
+        choice(
+          $.export_specifier,
+          seq(optional('type'), '{', commaSep1($.export_specifier), optional(','), '}'),
+        ),
+        'from',
+      ),
+
     export_statement: ($) =>
-      seq('export', field('declaration', choice($.type_alias_declaration, $.function_declaration))),
+      seq(
+        'export',
+        choice(
+          seq(
+            optional('default'),
+            field(
+              'declaration',
+              choice(
+                $.type_alias_declaration,
+                $.function_declaration,
+                $.variable_declaration,
+                $.enum_declaration,
+              ),
+            ),
+          ),
+          seq($.export_clause, field('module', $.string), ';'),
+        ),
+      ),
+
+    import_specifier: ($) =>
+      seq(
+        optional('type'),
+        choice(
+          seq(field('name', $.identifier), optional(seq('as', field('alias', $.identifier)))),
+          seq(
+            field('name', choice(alias('*', $.identifier), alias('default', $.identifier))),
+            'as',
+            field('alias', $.identifier),
+          ),
+        ),
+      ),
+
+    import_clause: ($) =>
+      seq(
+        choice(
+          $.import_specifier,
+          seq(optional('type'), '{', commaSep1($.import_specifier), optional(','), '}'),
+        ),
+        'from',
+      ),
+
+    import_statement: ($) =>
+      seq('import', optional($.import_clause), field('module', $.string), ';'),
 
     // #endregion
 
@@ -274,7 +337,12 @@ module.exports = grammar({
 
     // Statements that can be at the top level of the program.
     _top_level_statement: ($) =>
-      choice($._block_level_statement, $.type_alias_declaration, $.export_statement),
+      choice(
+        $._block_level_statement,
+        $.type_alias_declaration,
+        $.export_statement,
+        $.import_statement,
+      ),
 
     // Blocks are used to group statements together, which create a new scope.
     // Variables declared in a block are not visible outside the block and must not be shadowed by variables with the same name in the outer scope.

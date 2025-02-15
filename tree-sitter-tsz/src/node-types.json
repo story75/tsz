@@ -805,13 +805,68 @@
     }
   },
   {
+    "type": "export_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "export_specifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "export_specifier",
+    "named": true,
+    "fields": {
+      "alias": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "namespace_export",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "export_statement",
     "named": true,
     "fields": {
       "declaration": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
+          {
+            "type": "enum_declaration",
+            "named": true
+          },
           {
             "type": "function_declaration",
             "named": true
@@ -819,9 +874,33 @@
           {
             "type": "type_alias_declaration",
             "named": true
+          },
+          {
+            "type": "variable_declaration",
+            "named": true
+          }
+        ]
+      },
+      "module": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "export_clause",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1093,6 +1172,73 @@
     }
   },
   {
+    "type": "import_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "import_specifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "import_specifier",
+    "named": true,
+    "fields": {
+      "alias": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "import_statement",
+    "named": true,
+    "fields": {
+      "module": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "import_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "index_type_query",
     "named": true,
     "fields": {},
@@ -1313,6 +1459,22 @@
           },
           {
             "type": "property_identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "namespace_export",
+    "named": true,
+    "fields": {
+      "alias": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
             "named": true
           }
         ]
@@ -1718,6 +1880,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "import_statement",
           "named": true
         },
         {
@@ -2422,6 +2588,10 @@
     "named": false
   },
   {
+    "type": "as",
+    "named": false
+  },
+  {
     "type": "asserts",
     "named": false
   },
@@ -2452,14 +2622,18 @@
   },
   {
     "type": "const",
-    "named": false
-  },
-  {
-    "type": "const",
     "named": true
   },
   {
+    "type": "const",
+    "named": false
+  },
+  {
     "type": "continue",
+    "named": false
+  },
+  {
+    "type": "default",
     "named": false
   },
   {
@@ -2491,6 +2665,10 @@
     "named": false
   },
   {
+    "type": "from",
+    "named": false
+  },
+  {
     "type": "function",
     "named": false
   },
@@ -2505,6 +2683,10 @@
   },
   {
     "type": "if",
+    "named": false
+  },
+  {
+    "type": "import",
     "named": false
   },
   {
@@ -2537,11 +2719,11 @@
   },
   {
     "type": "number",
-    "named": false
+    "named": true
   },
   {
     "type": "number",
-    "named": true
+    "named": false
   },
   {
     "type": "of",
