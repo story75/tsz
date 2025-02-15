@@ -8,6 +8,16 @@ type Bar = {a: string, b: number};
 
 type Baz = {deep: {nested: {baz: number}}};
 
+type BazWithOptional = {
+    deep: {
+        nested: {
+            baz: number | undefined,
+            foo?: number,
+            foo: number?,
+        }
+    }
+};
+
 type Union = number | string;
 
 type Array = number[];

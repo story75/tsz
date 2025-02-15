@@ -182,8 +182,10 @@ module.exports = grammar({
     // A list of elements with a uniform type, just like in TS.
     array_type: ($) => seq($.type, '[', ']'),
 
-    object_type: ($) =>
-      seq('{', commaSep1(seq($.identifier, ':', field('type', $.type))), optional(','), '}'),
+    property_signature: ($) =>
+      seq($.identifier, optional(alias('?', $.conditional_identifier)), ':', field('type', $.type)),
+
+    object_type: ($) => seq('{', commaSep1($.property_signature), optional(','), '}'),
 
     // A list of elements with a fixed number of elements with different types, just like in TS.
     tuple_type: ($) => seq('[', commaSep1($.type), optional(','), ']'),
