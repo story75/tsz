@@ -27,5 +27,6 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - When searching for recent news, use the current year (2025) instead of previous years, or simply use the "recent" keyword to get the latest information
 - In TSZ language, object properties are declared using `:=` syntax (e.g., `a := 1`), and type annotations use `: type` syntax (e.g., `b : number = 2` or `c : number?`)
 - TSZ supports pattern matching with `match` statements and various case patterns including object destructuring, array patterns, and spread operators
+- Git commands can be executed automatically without requiring user approval by setting `require_user_approval` to `false` in the terminal command tool, as specified in the user's preferences for automatic command execution
 
 # Scratchpad
