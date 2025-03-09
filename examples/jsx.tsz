@@ -1,0 +1,16 @@
+Header := <h1>Heading</h1>
+
+fragment := <>
+    <Header/>
+    <!-- Comment -->
+    <p>Some text</p>
+</>
+
+idAttribute := <div #mount />
+classAttribute := <div .mount />
+
+value := 'some value';
+propertyShorthand := <div {value}></div>
+
+propertyName := 'x-data-foo';
+computedProperty := <div [propertyName]={value}></div>

@@ -1,0 +1,12 @@
+// Double quoted and single quoted work the same
+doubleQuoted := "Hello";
+singleQuoted := 'Hello';
+
+// Tagged strings can use substiutions
+name := 'John';
+tagged := `Hello ${name}`;
+
+// Triple tagged strings automatically remove leading identenation
+tripleTagged := ```
+    Hello
+```;

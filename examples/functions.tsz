@@ -1,0 +1,58 @@
+{
+    sum := (a: number, b: number): number => a + b;
+    
+    asyncSum := async (a: number, b: number): Promise<number> => {
+        return a + b;
+    };
+
+    mut result := sum(1, 2);
+    result = await asyncSum(2, 3);
+}
+
+{
+    generator := *(): Generator<number> => loop {
+        yield Math.random();
+    }
+
+    asyncGenerator := async *(): AsyncGenerator<number> => loop {
+        yield Math.random();
+    }
+}
+
+{
+    map := <Input, Output>(list: Input[], mapper: (input: Input) => Output): Output[] => {
+        result: Output = [];
+        for (item of list)  {
+            result.push(mapper(item));
+        }
+        return result;
+    }
+
+    numbers := [1, 2, 3, 4];
+
+    // convert numbers to strings
+    mut result: string[];
+
+    // plain
+    result = map(numbers, i => String(i));
+
+    // with pipeline
+    result = numbers |> map(#, i => String(i));
+
+    // with bind syntax
+    // bind will pass the left hand side as the first parameter to the called function
+    result = numbers::map(i => String(i));
+
+    // with block syntax
+    // block will be passed as the last parameter to the left hand side function
+    // if the block does not have parameters you can omit the piped arguments
+    result = map(numbers) |i| {
+        String(i)
+    }
+
+    // with block syntax unbraced
+    result = map(numbers) |i| String(i);
+
+    // with bind and block
+    result = numbers::map |i| String(i);
+}

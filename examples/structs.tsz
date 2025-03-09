@@ -1,0 +1,38 @@
+{
+    Point := struct {
+        x: number;
+        y: number;
+    }
+
+    x := 5;
+    y := 7;
+
+    p := Point {
+        x = 5,
+        y = 5,
+    };
+
+    p2 := Point {x, y};
+}
+
+{
+    Vec3 := struct {
+        x := 0;
+        y := 0;
+        z := 0;
+
+        dot := (self: Vec3, other: Vec3): number => {
+            return self.x * other.x + self.y * other.y + self.z * other.z;
+        }
+    }
+
+    v1 := Vec3 {x = 1};
+    v2 := Vec3 {y = 1};
+
+    // Use bind syntax to call the function
+    // TODO: find better syntax for this case
+    result1 := v1::Vec3.dot(v2);
+    
+    // the above is the same as this:
+    result2 := Vec3.dot(v1, v2);
+}
