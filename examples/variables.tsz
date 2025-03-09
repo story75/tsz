@@ -1,127 +1,48 @@
-// mutate variables
 {
-    let a = 1;
-    a = 2;
-    console.log(@TypeOf(a)); // number
+    constant := 42; // type can be trivially infered
+    mut value := 5; // type can be trivially infered
+
+    typedConstant : number = 42;
+    mut typedValue : number = 5;
+
+    mut optional : number?; // variables without an initializer must specify a type
+    optional = 1;
 }
 
-// immutable variables
 {
-    const b = 1;
-    console.log(@TypeOf(b)); // 1
-    // b = 2; // error: cannot assign to constant 'b'
-    // TODO: add @expectError macro for error assertions
+    numberList: number[] = [1, 2, 3];
+    stringList: string[] = ["foo", "bar"];
+    tupleMixedList := [1, "foo"]; // will be infered as [number, string];
+    mut mixedList := [1, "foo"]; // will is still infered as [number, string];
+
+    numberTuple: [number, number] = [1, 1];
+    mut mutableNumberTuple: [number, number] = [1, 1];
+    mut mutableNumberList = [1, 1]; // believe it or not, also [number, number]
 }
 
-// type inference
 {
-    let c = 1;
-    console.log(@TypeOf(c)); // number
-    // c = "hello"; //  error: cannot assign "hello" to 1
-    
-    const foo = 'foo';
-    console.log(@TypeOf(foo)); // 'foo'
-    
-    const bar = 1; 
-    console.log(@TypeOf(bar)); // 1
+    add := (a: number, b: number): number => a + b;
 
-    // let x; // error: must explicitly declare type for 'x'
-
-    const template = `hello ${foo}`;
-    console.log(@TypeOf(template)); // "hello foo" - because `template` and `foo` are constants
-}
-
-// type annotations
-{
-    let d: number = 1;
-    let e: string = "hello";
-    let f: boolean = true;
-    let g: number | string;
-    g = 1; // number
-    g = "hello"; // string
-}
-
-// empty mutable variables
-{
-    let h: number?;
-    let j: number | undefined; // same as number?
-    console.log(@TypeOf(h)); // number | undefined
-    console.log(@TypeOf(j)); // number | undefined
-    h = 1;
-    console.log(@TypeOf(h)); // number
-    // h = "hello"; // error: cannot assign "hello" to number | undefined
-}
-
-// arrays
-{
-    let h: number[] = [1, 2, 3];
-    console.log(@TypeOf(h)); // number[]
-    let i: string[] = ["foo", "bar"];
-    console.log(@TypeOf(i)); // string[]
-    let k = [1, "foo"]; // mutable array with mixed types create a union type
-    console.log(@TypeOf(k)); // (number, string)[]
-}
-
-// tuples
-{
-    let j: [number, string] = [1, "foo"];
-    console.log(@TypeOf(j)); // [number, string]
-
-    const k = [1, "foo"]; // constant array are implicitly typed as tuples
-    console.log(@TypeOf(k)); // [1, "foo"]
-}
-
-// functions
-{
-    function add(a: number, b: number): number {
-        console.log(@TypeOf(a)); // number
-        console.log(@TypeOf(b)); // number
-        return a + b;
-    }
-    console.log(@TypeOf(add)); // (a: number, b: number) -> number
     console.log(add(1, 2)); // 3
-}
-
-// arrow functions
-{
-    const fn = () => {};
-    console.log(@TypeOf(fn)); // () -> void
-
-    const add2 = (a: number, b: number): number => {
-        console.log(@TypeOf(a)); // number
-        console.log(@TypeOf(b)); // number
-        return a + b;
-    };
-    console.log(@TypeOf(add2)); // (a: number, b: number) -> number
-    console.log(add2(1, 2)); // 3
 }
 
 // object literals
 {
-    const obj = {
-        a: 1,
-        b: "foo",
-        c: true,
-        d: [1, 2, 3],
-        e: {
-            f: 'foo',
+    options := {
+        a := 1,
+        b : string = 'foo', // same as just b := 'foo', because type can be trivially infered
+        mut c : number?, // optional number property
+        d := true,
+        e := [1, 2, 3],
+        f := {
+            mut a := 'nested',
         },
     };
-    console.log(@TypeOf(obj)); // { a: number, b: string }
-    console.log(obj.a); // 1
-    console.log(obj.b); // "foo"
-    console.log(obj.c); // true
-    console.log(obj.d); // [1, 2, 3]
-    console.log(obj.e); // { f: "foo" }
-}
-
-// type assertions
-{
-    let m: number | string = "hello";
-    console.log(@TypeOf(m)); // string
-    m = 1;
-    console.log(@TypeOf(m)); // number
-    let n = String(m); // cast to string
-    console.log(@TypeOf(n)); // string
-    console.log(n); // "1"
+    
+    console.log(options.a); // 1
+    console.log(options.b); // "foo"
+    console.log(options.c); // undefined
+    console.log(options.d); // true
+    console.log(options.e); // [1, 2, 3]
+    console.log(options.f); // { a: "nested" }
 }

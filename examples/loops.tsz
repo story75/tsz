@@ -1,0 +1,39 @@
+{
+	mut sum := 0;
+
+    // You can use ranges. Ranges are inclusive of the lower and upper bound
+    // The item variable defaults to const in JS
+    for (x of 0..10) { 
+    	sum = sum + x;
+    }
+}
+
+{
+    // You can also access the index
+	for (item, index of [1, 2, 3]) {
+    	console.log(item, index);
+    }
+}
+
+{
+	mut bar := 0;
+
+	while (true) {
+    	if (bar == 5) {
+        	break;
+        }
+        bar = bar + 1;
+    }
+}
+
+{
+	mut bar := 0;
+
+    // same as while (true)
+	loop {
+    	if (bar == 5) {
+        	break;
+        }
+        bar = bar + 1;
+    }
+}

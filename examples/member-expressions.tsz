@@ -1,6 +1,11 @@
-expect(result).toBeDefined();
-expect.toBeDefined();
+myObject := {
+    myProperty := 'myValue';
+};
 
-const a = foo.bar;
-const b = foo().bar;
-const c = foo(a, b, c).bar();
+myFunction := (a: number = 1, b: number = 2, c: number = 3): number => {
+    return {a, b, c};
+}
+
+a := myObject.myProperty;
+b := myFunction().a;
+c := myFunction(2, 3, 4).b;

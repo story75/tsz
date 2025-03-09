@@ -4,15 +4,16 @@ export type Listener<M, E extends keyof M> = EventListener<M, E>;
 
 type Foo = number;
 
+type Baz = 'foobar';
+
 type Bar = {a: string, b: number};
 
-type Baz = {deep: {nested: {baz: number}}};
+type NestedObject = {deep: {nested: {baz: number}}};
 
-type BazWithOptional = {
+type NestedObjectWithOptional = {
     deep: {
         nested: {
-            baz: number | undefined,
-            foo?: number,
+            baz: number,
             foo: number?,
         }
     }
@@ -24,12 +25,8 @@ type Array = number[];
 
 type Tuple = [string, number];
 
-type Lookup = Baz['deep']['nested'];
+type Lookup = NestedObject['deep']['nested'];
 
-type WeirdLookup = {a: string}['a'];
+type GenericArray<T> = T[];
 
-type Baz = 'foobar';
-
-type Generic<T> = T[];
-
-type Generic2<T> = Promise<T>;
+type GenericPromise<T> = Promise<T>;

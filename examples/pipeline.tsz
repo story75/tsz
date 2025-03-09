@@ -1,12 +1,28 @@
 {
-    const add = (a: number, b: number): number => a + b;
+    add := (a: number, b: number): number => a + b;
 
-    const result1 = 1 |> add(#, 2) |> add(#, 3) |> add(#, 4);
-    console.log(result1); // 10
+    mut numberResult := 1 |> add(#, 2) |> add(#, 3) |> add(#, 4);
+    console.log(numberResult); // 10
 
-    const result2 = 1 |> add(#, #) |> add(#, #) |> add(#, #);
-    console.log(result2); // 8
+    numberResult = 1 |> add(#, #) |> add(#, #) |> add(#, #);
+    console.log(numberResult); // 8
     
-    const result3 = 'world' |> `hello ${#}`;
-    console.log(result3); // 'hello world'
+    stringResult := 'world' |> `hello ${#}`;
+    console.log(stringResult); // 'hello world'
+}
+
+{
+    mut list := [1, 2, 3, 4];
+
+    list ||> .pop() ||> .push(5) ||> .sort() ||> .reverse();
+}
+
+{
+    add := (a: number, b: number): number => a + b;
+
+    result := 1 ||> console.log('Start value', #)
+                |> add(#, 2)
+                ||> console.log('Added 2', #)
+                |> add(#, 4)
+                ||> console.log('Added 4', #)  
 }

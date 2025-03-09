@@ -1,9 +1,4 @@
-const foo = "world";
-const bar = `hello ${foo}`;
-console.log(bar); // "hello world"
-console.log(@TypeOf(bar)); // "hello world"
+name := 'John';
+greeting := 'Hello';
 
-let name = "John";
-const greeting = `Hello, ${name}!`;
-console.log(greeting); // "Hello, John!"
-console.log(@TypeOf(greeting)); // "Hello, John!" instead of string, because name is not changed before the template is evaluated
+console.log(`${greeting}, ${name}`);

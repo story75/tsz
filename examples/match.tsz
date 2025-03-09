@@ -1,30 +1,44 @@
 {
-	match (bar) {
-    	case 0: console.log('low');
-        case 2: console.log('mid');
-        case 42: console.log('just right');
-        else: console.log('high');
-    }
-}
-
-{
-	const foo = match (bar) {
-    	case 0: 'low';
-        case 2: 'mid';
-        case 42: 'just right';
-        else: 'high';
-    };
+	bar := 6;
     
-    console.log(foo);
-}
-
-{
-	const foo = match (bar) {
+    result := match (bar) {
     	case 0, 2, 4: 'low';
-        case 5 .. 10, 20..30: 'mid';
+        case 5..10, 20..30: 'mid'; // 11-19 goes to fallback
         case 42: 'just right';
-        else: 'high';
+        else: 'high or uncovered';
     };
     
-    console.log(foo);
+    console.log(result);
+}
+
+{
+	options := {
+        a := 1,
+        b : number = 2, // same as just b := 2, because type can be trivially infered
+        c : number?,
+    };
+    
+    result := match (options) {
+    	case {c: 5}: 'c is 5';
+        case {a, b, c}: 'options has a, b and c';
+        case {...properties}: `options has the properties ${Object.keys(properties)}`;
+        else: 'fallback case e.g. not an object';
+    };
+    
+    console.log(result);
+}
+
+{
+	list := [1, 2, 3, 4];
+    
+    result := match (list) {
+    	case []: 'list is empty';
+        case [item]: `list has one item: ${item}`;
+        case [a, b, c]: `list has three items: ${a}, ${b}, ${c}`;
+        case [1, 2, ...rest]: 'the first element is 1 and the second element is two';
+        case [...rest]: `list has the following items: ${rest.join(',')}`;
+        else: 'fallback case e.g not an array';
+    };
+    
+    console.log(result);
 }

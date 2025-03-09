@@ -1,1 +1,0 @@
-@cast(CustomWindow, window).myValue = undefined;
