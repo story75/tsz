@@ -30,8 +30,8 @@
     v2 := Vec3 {y = 1};
 
     // Use bind syntax to call the function
-    // TODO: find better syntax for this case
-    result1 := v1::Vec3.dot(v2);
+    // note the extra dot which is similar to the fat pipe execution
+    result1 := v1::.dot(v2);
     
     // the above is the same as this:
     result2 := Vec3.dot(v1, v2);
