@@ -2,8 +2,14 @@ myObject := {
     myProperty := 'myValue';
 };
 
-myFunction := (a: number = 1, b: number = 2, c: number = 3): number => {
-    return {a, b, c};
+MyStruct := struct {
+    a: number;
+    b: number;
+    c: number;
+}
+
+myFunction := (a: number = 1, b: number = 2, c: number = 3): MyStruct => {
+    return MyStruct{a, b, c};
 }
 
 a := myObject.myProperty;

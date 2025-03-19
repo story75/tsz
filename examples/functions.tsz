@@ -10,6 +10,20 @@
 }
 
 {
+    mutator := (mut value: number): void => {
+        value = value + 2;
+    }
+
+    mut myNumber := 5;
+    mutator(myNumber);
+
+    // or with bind syntax
+    myNumber::mutator();
+
+    console.log(myNumber) // will log 9
+}
+
+{
     generator := *(): Generator<number> => loop {
         yield Math.random();
     }
@@ -21,7 +35,7 @@
 
 {
     map := <Input, Output>(list: Input[], mapper: (input: Input) => Output): Output[] => {
-        result: Output = [];
+        result: Output[] = [];
         for (item of list)  {
             result.push(mapper(item));
         }
@@ -44,7 +58,7 @@
     result = numbers::map(i => String(i));
 
     // with block syntax
-    // block will be passed as the last parameter to the left hand side function
+    // a block will be passed as the last parameter to the left hand side function
     // if the block does not have parameters you can omit the piped arguments
     result = map(numbers) |i| {
         String(i)
@@ -55,4 +69,30 @@
 
     // with bind and block
     result = numbers::map |i| String(i);
+}
+
+{
+    ErrorType := enum {
+        Unavailable,
+        NotExistant,
+    }
+
+    OpenError : ErrorType.Unavailable | ErrorType.NotExistant | {message: string};
+    
+    declare open: (filePath: string): Result<Resource, OpenError>;
+    declare close: (resouce: Resource): void;
+
+    resourceHandler := (filePath: string): OpenError? => {
+        resource := try filePath::open();
+        
+        // same as above
+        // resource := match (filePath::open()) {
+        //     r -> Ok(r): r,
+        //     e -> Error(e): return e,
+        // }
+
+        defer resource::close();
+
+        // do some work with the resource
+    }
 }

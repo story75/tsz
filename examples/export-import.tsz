@@ -2,25 +2,16 @@
 import 'core-js/foo';
 // Import default export
 import DefaultName from 'svelte-package';
-// Type only named imports
-import type {Foo} from 'type-package';
-// Mixed named imports
-import {type Foo, Bar, type Baz as TypeBaz} from 'mixed-package';
+// Named imports
+import {Foo, Bar, Baz as TypeBaz} from 'mixed-package';
 // Import everything with an alias
 import * as GroupedImport from 'bar';
 
-// Re-export a entire package
-export * from 'reexport';
 // Re-export symbols explitly
-export {Foo as Bar, type Baz} from 'foo';
-// Re-export only types
-export type {Foo} from 'foo';
-
-// Export a type
-export type EventListener<M, E extends keyof M> = (evt: M[E]) => void | Promise<void>;
+export {Foo as Bar, Baz} from 'foo';
 
 // Export a constant value
 export bar := "bar";
 
-// Export a constant value as a default export
-export default foo := "bar";
+// A default export. Modules may either contain a single default export or muliple named exports
+export default "bar";

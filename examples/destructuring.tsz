@@ -1,15 +1,18 @@
-options := {
-    a := 1,
-    b : number = 1, // same as just b := 1, because type can be trivially infered
-    c : number?,
-};
+{
+    options := {
+        a := 1,
+        b : number = 1, // same as just b := 1, because type can be trivially infered
+        c : number?,
+    };
 
-{ a, b, ...rest } := options;
-{ c ?= 3 } := options;
-{ a as aaa, b as bbb } := options;
-{ mut a, b } := options;
+    { a, b, ...rest } := options;
+    { a as aaa, b as bbb } := options;
+    { mut a, b } := options;
+}
 
-list := [1, 2, 3, 4, 5];
-[a, b, ...rest] := list;
-[a, b ?= 5] := list;
-[mut a] := list;
+{
+    list := [1, 2, 3, 4, 5];
+    [a, b, ...rest] := list;
+    [c] := list;
+    [mut d] := list;
+}

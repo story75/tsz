@@ -1,32 +1,98 @@
-export type EventListener<M, E extends keyof M> = (evt: M[E]) => void | Promise<void>;
+// Primitive types
+number1 := 42;
+string1 := "hello";
+boolean1 := true;
+explicit1 : number = 100;
+explicit2 : string = "world";
+explicit3 : boolean = false;
 
-export type Listener<M, E extends keyof M> = EventListener<M, E>;
+// Optional types
+mut optionalNumber : number? = 42;
+mut optionalString : string? = undefined;
+mut optionalString2 : string?;
 
-type Foo = number;
+// Arrays
+numberArray : number[] = [1, 2, 3];
+stringArray : string[] = ["a", "b", "c"];
+mixedArray := [1, "a", true]; // Inferred type [number, string, boolean]
+emptyArray : number[] = [];
 
-type Baz = 'foobar';
+// Tuples (fixed-length arrays with specific types at each position)
+tuple1 : [number, string] = [1, "hello"];
+mut tuple2 : [string, boolean, number?] = ["world", true, undefined];
 
-type Bar = {a: string, b: number};
-
-type NestedObject = {deep: {nested: {baz: number}}};
-
-type NestedObjectWithOptional = {
-    deep: {
-        nested: {
-            baz: number,
-            foo: number?,
-        }
-    }
+// Objects
+simpleObject := {
+    a := 1,
+    b := "string",
+    c := true,
 };
 
-type Union = number | string;
+typedObject := {
+    a : number = 1,
+    b : string = "string",
+    c : boolean = true,
+};
 
-type Array = number[];
+// This is possible as well, but you should use a struct for these cases
+typedObject2 : {a: number, b: string, c: boolean} = {
+    a := 1,
+    b := "string",
+    c := true,
+};
 
-type Tuple = [string, number];
+objectWithOptional := {
+    a := 1,
+    b : string = "string",
+    mut c : boolean? = undefined,
+};
 
-type Lookup = NestedObject['deep']['nested'];
+// Union types
+unionType : number | string = 42;
+unionType2 : number | string = "hello";
+// in a real app you should avoid such unions
+mut complexUnion : number | string | boolean | number[] = [1, 2, 3];
 
-type GenericArray<T> = T[];
+// Using enums
+Color := enum {
+    Red,
+    Green,
+    Blue,
+}
 
-type GenericPromise<T> = Promise<T>;
+colorVar : Color = Color.Red;
+colorVarShorthand : Color = .Red; // This works as well if the type is defined
+
+// Result type (for error handling)
+successResult : Result<number, string> = Ok(42);
+errorResult : Result<number, string> = Error("something went wrong");
+
+// Generic types
+Boxed<T> := struct {
+    mut value: T;
+}
+numberBox := Boxed {value = 42}; // infered as Boxed<number>
+stringBox : Boxed<string> = Boxed {value = "hello"};
+
+// Function types
+simpleFunction : (a: number, b: number) => number = (a, b) => a + b;
+asyncFunction : (a: number) => Promise<number> = async (a) => a * 2;
+
+// Mutable variables
+mut mutableNumber := 42;
+mut mutableString : string = "hello";
+mut mutableArray : number[] = [1, 2, 3];
+mut mutableObject := {
+    mut a := 1,
+    b := "string",
+};
+
+// Nested types
+mut nestedType := {
+    a := 42,
+    b := ["hello", "world"],
+    c := {
+        d := true,
+        mut e : number? = undefined,
+    },
+};

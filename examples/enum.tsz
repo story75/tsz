@@ -1,0 +1,23 @@
+// Simple enum with automatic values starting with 0 going up
+ErrorType := enum {
+    Unavailable,
+    NotExistant,
+}
+
+// With explicit values
+Flags := enum {
+    A := 1 << 0,
+    B := 1 << 1,
+    C := 1 << 2,
+    D := 1 << 3,
+    E := 1 << 4,
+}
+
+// You may define heterogeneous enums if you need to
+Heterogeneous := enum {
+    ANumber := 42,
+    AString := 'Foo',
+}
+
+foo := Flags.A;
+bar : Flags = .B; // you can also use a shorthand if the type is known

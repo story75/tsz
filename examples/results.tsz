@@ -1,0 +1,33 @@
+rng := (): number? => if (Math.random() > 0.5) 42 else undefined;
+
+unwrapped := rng() ?? 1;
+
+mayFail := (): Result<number, string> => {
+    value := rng();
+
+    if (!value) {
+        return Error('oops');
+    }
+
+    return Ok(value);
+}
+
+result := match (mayFail()) {
+    n -> Ok(n): n,
+    s -> Error(s): s,
+}
+
+// inside a function you may use try which is a short-hand for the above, which will return the error value instead
+propagateFn := (): Result<number, string> => {
+    myResult := try mayFail();
+
+    // same as above
+    // myResult := match (mayFail()) {
+    //     r -> Ok(r): r,
+    //     e -> Error(e): return e,
+    // }
+
+    // do something with myResult
+
+    return Ok(myResult);
+}

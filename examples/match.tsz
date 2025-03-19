@@ -2,13 +2,29 @@
 	bar := 6;
     
     result := match (bar) {
-    	case 0, 2, 4: 'low';
-        case 5..10, 20..30: 'mid'; // 11-19 goes to fallback
-        case 42: 'just right';
+    	0, 2, 4: 'low';
+        5..10, 20..30: 'mid'; // 11-19 goes to fallback
+        42: 'just right';
         else: 'high or uncovered';
     };
     
     console.log(result);
+}
+
+{
+    MyEnum := enum {
+        A,
+        B,
+        C,
+    }
+
+    value := MyEnum.A;
+
+    result := match (value) { 
+        MyEnum.A: 'matched A',
+        .B: 'matched B', // you can also use a shorthand if the type is known
+        .C: 'matched C',
+    }
 }
 
 {
@@ -19,9 +35,9 @@
     };
     
     result := match (options) {
-    	case {c: 5}: 'c is 5';
-        case {a, b, c}: 'options has a, b and c';
-        case {...properties}: `options has the properties ${Object.keys(properties)}`;
+    	{c: 5}: 'c is 5';
+        {a, b, c}: `options has a=${a}, b=${b} and c=${c}`;
+        {...properties}: `options has the properties ${Object.keys(properties)}`;
         else: 'fallback case e.g. not an object';
     };
     
@@ -32,13 +48,39 @@
 	list := [1, 2, 3, 4];
     
     result := match (list) {
-    	case []: 'list is empty';
-        case [item]: `list has one item: ${item}`;
-        case [a, b, c]: `list has three items: ${a}, ${b}, ${c}`;
-        case [1, 2, ...rest]: 'the first element is 1 and the second element is two';
-        case [...rest]: `list has the following items: ${rest.join(',')}`;
+    	[]: 'list is empty';
+        [item]: `list has one item: ${item}`;
+        [a, b, c]: `list has three items: ${a}, ${b}, ${c}`;
+        [1, 2, ...rest]: 'the first element is 1 and the second element is two';
+        [...rest]: `list has the following items: ${rest.join(',')}`;
         else: 'fallback case e.g not an array';
     };
     
     console.log(result);
+}
+
+{
+    // you can also write function for special matchers, like Ok() and Error()
+    isEven := (value: number): boolean => value % 2 == 0;
+    isFive := (value: number): boolean => value == 5;
+
+    valueFn := ():number => 4;
+
+    // use the -> syntax to define a name for the value which is matched over
+    result := match (valueFn()) {
+        0, 1, 2: 'value is 0, 1 or 2', // you may combine it with all the previous match cases depending on your needs
+        a -> a != 4 && isEven(a): `${a} is not 4 and even`, // you can also extend the check as long as the expression results in a boolean
+        b -> isEven(b): `${b} is even`,
+        c -> v::isFive(): `${c} is 5`, // also works with bind syntax
+        other -> else:  `${other} is odd and not 5, 2, 1, 0`,
+    }
+}
+
+{
+    bar := 6;
+    
+    result := match (bar) {
+    	v -> 0, 2, 4: `value is low: ${v}`; // you may also use capturing with static cases
+        v -> else: `uncovered value ${v}`;
+    };
 }
